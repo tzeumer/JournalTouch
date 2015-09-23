@@ -1,5 +1,7 @@
 # About
 
+[![Join the chat at https://gitter.im/tzeumer/JournalTouch](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/tzeumer/JournalTouch?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 JournalTouch provides a touch-optimized interface for browsing current journal tables of contents in Responsive Design. Fun!
 
 # License
