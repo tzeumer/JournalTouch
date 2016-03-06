@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Journaltouch : JournalTouch provides a touch-optimized interface for browsing current jounal tables of contents in Responsive Design. Fun!">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Journaltouch</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/tzeumer/JournalTouch">View on GitHub</a>
+
+          <h1 id="project_title">Journaltouch</h1>
+          <h2 id="project_tagline">JournalTouch provides a touch-optimized interface for browsing current jounal tables of contents in Responsive Design. Fun!</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/tzeumer/JournalTouch/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/tzeumer/JournalTouch/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="about" class="anchor" href="#about" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>About</h1>
+
+<p>JournalTouch provides a touch-optimized, responsive interface for browsing current journal table-of-contents.</p>
+
+<p>See latest changelog for unreleased version: <a href="doc/github/version_0.4_unreleased.md">JournalTouch Version 0.4</a>.</p>
+
+<h1>
+<a id="quickstart" class="anchor" href="#quickstart" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Quickstart</h1>
+
+<h2>
+<a id="prerequisites" class="anchor" href="#prerequisites" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Prerequisites</h2>
+
+<ol>
+<li>Make sure you have Apache and PHP available. Nothing else is needed</li>
+<li>Be aware that much of the fun is with showing covers. But we don't (really) know freely available sources. JournalTocs Premium offers cover links, yet is not free. With version 0.4 JournalTouch introduces a way to easily donwload covers. But make sure to read the disclaimer in the admin menu very carefully - you might lack legal rights to use it at all.</li>
+</ol>
+
+<h2>
+<a id="quick-start" class="anchor" href="#quick-start" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Quick Start</h2>
+
+<ol>
+<li>Create a free <a href="http://www.journaltocs.ac.uk/index.php?action=register">JournalTocs account</a>. While not strictly required, it is highly recommended.</li>
+<li>Download JournalToc one the right side ("Download zip")</li>
+<li>Extract to you apache webfolder. Make sure the data folder and its subfolders are writable by the webserver.</li>
+<li>Go to <a href="http://myinstallation.net/admin">http://myinstallation.net/admin</a> and set enter your JournalTocs mail there (you also should make sure this folder is secured, e.g. by using a htaccess).</li>
+<li>Edit data/cover/journals.csv (text editor or e.g. Libre Office calc). In a text editor each semicolon represents a column separator. Print-ISSNs must be in column six (five semicolons before), E-ISSN go in column 6 (six semicolons before). There are no column headers, but you can refer to the config.php file and check the $cfg-&gt;csv_col variables to see what goes where. Yet, you only really need the ISSNs to get started, although we recommend adding the journal title too, e.g. if it can't be found online.</li>
+<li>Go again to <a href="http://myinstallation.net/admin">http://myinstallation.net/admin</a>. Under "Update options" click "Start" and wait. You journals.csv will get updated.</li>
+<li>Go to <a href="http://myinstallation.net/">http://myinstallation.net/</a> and be happy</li>
+<li>IF you are happy, set a cronjob to call <a href="http://myinstallation.net/admin/updateTocs.php?optRecent=on&amp;upd=true">http://myinstallation.net/admin/updateTocs.php?optRecent=on&amp;upd=true</a> daily or use <a href="http://myinstallation.net/admin/updateTocs.php?optRecent=on&amp;optCovers=on&amp;upd=true">http://myinstallation.net/admin/updateTocs.php?optRecent=on&amp;optCovers=on&amp;upd=true</a> if you want to update covers too (Settings menu or release infos for 0.4 for more infos)
+
+<ol>
+<li>Example Cronjob: wget -O - -q -t 1 "<a href="http://myinstallation.net/admin/updateTocs.php?optRecent=on&amp;optCovers=on&amp;upd=true">http://myinstallation.net/admin/updateTocs.php?optRecent=on&amp;optCovers=on&amp;upd=true</a>" &gt;/dev/null 2&gt;&amp;1</li>
+</ol>
+</li>
+</ol>
+
+<h2>
+<a id="translations" class="anchor" href="#translations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Translations</h2>
+
+<ul>
+<li>If you want to change translations you can use <a href="https://poedit.net/">Poedit</a> - it's free.</li>
+<li>As of version 0.4 many thing can be translated in the Settings menu in the admin panel :)</li>
+</ul>
+
+<h1>
+<a id="current-version-04-alpha-beta-gamma" class="anchor" href="#current-version-04-alpha-beta-gamma" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Current version: 0.4 (alpha-beta-gamma)</h1>
+
+<p>This is JournalTouch Version 0.4 (the current official version is 0.3). </p>
+
+<p>We're using the git-flow project structure, so the master branch always holds the latest stable released version of this project.
+Work towards the next release happens on the <code>develop</code> branch. For more information, please refer to the <a href="https://github.com/bibliocoll/JournalTouch/wiki/Contributing">Wiki</a></p>
+
+<h1>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h1>
+
+<p><a href="https://github.com/copyright" class="user-mention">@copyright</a> 2015 MPI for Research on Collective Goods, Library
+(Contact: <a href="mailto:fruehauf@coll.mpg.de">fruehauf@coll.mpg.de</a> and <a href="mailto:krug@coll.mpg.de">krug@coll.mpg.de</a>)</p>
+
+<p>@author Alexander Krug <a href="mailto:krug@coll.mpg.de">krug@coll.mpg.de</a> (Maintainer)</p>
+
+<p>@author Tobias Zeumer <a href="mailto:tzeumer@verweisungsform.de">tzeumer@verweisungsform.de</a></p>
+
+<p>@author Daniel Zimmel <a href="mailto:dnl@mailbox.org">dnl@mailbox.org</a></p>
+
+<p>License: <a href="http://www.gnu.org/licenses/gpl.html">http://www.gnu.org/licenses/gpl.html</a> GPL version 3 or higher</p>
+
+<h1>
+<a id="live-demo" class="anchor" href="#live-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Live Demo</h1>
+
+<p>Try here: <a href="http://www.coll.mpg.de/bib/jtdemo-public/">http://www.coll.mpg.de/bib/jtdemo-public/</a></p>
+
+<h1>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies</h1>
+
+<ul>
+<li>PHP 5.3 ([<a href="http://www.php.net">http://www.php.net</a>])</li>
+<li>API key for JournalTocs ([<a href="http://www.journaltocs.ac.uk">http://www.journaltocs.ac.uk</a>])</li>
+</ul>
+
+<h1>
+<a id="wiki" class="anchor" href="#wiki" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Wiki</h1>
+
+<p>The documentation for this project lives on the <a href="https://github.com/bibliocoll/JournalTouch/wiki/">wiki</a>, please continue reading there.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Journaltouch maintained by <a href="https://github.com/tzeumer">tzeumer</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
