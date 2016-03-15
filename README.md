@@ -25,7 +25,7 @@ See latest changelog for unreleased version: [JournalTouch Version 0.4](doc/gith
 - As of version 0.4 many thing can be translated in the Settings menu in the admin panel :)
 
 # Current version: 0.4 (alpha-beta-gamma)
-This is JournalTouch Version 0.4 (the current official version is 0.3). 
+This is JournalTouch Version 0.4 (the current official version is 0.3).
 
 We're using the git-flow project structure, so the master branch always holds the latest stable released version of this project.
 Work towards the next release happens on the `develop` branch. For more information, please refer to the [Wiki] (https://github.com/bibliocoll/JournalTouch/wiki/Contributing)
@@ -47,6 +47,7 @@ Try here: http://www.coll.mpg.de/bib/jtdemo-public/
 
 # Dependencies
 - PHP 5.3 ([http://www.php.net])
+- php5-curl module ([http://php.net/manual/de/book.curl.php])
 - API key for JournalTocs ([http://www.journaltocs.ac.uk])
 
 # Wiki
