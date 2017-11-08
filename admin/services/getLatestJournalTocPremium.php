@@ -111,7 +111,7 @@ foreach ($updatesURL as $updateURL) {
     $issn = myget("//prism:issn",$xpath);
     $eIssn = myget("//prism:eIssn",$xpath);
     // write only one $issn
-    $issn = valid_issn($issn, TRUE) === TRUE ? $issn : valid_issn($eIssn, TRUE) === TRUE ? $eIssn : '';
+    $issn = !empty($issn) ? $issn : $eIssn;
     $date = myget("//dc:date",$xpath);
     if (!isset($date) || $date === '') $date = date('c');
 
@@ -138,7 +138,7 @@ foreach ($updatesURL as $updateURL) {
 
       if (!empty($item['title'])) {
 
-        if ($item['issn'] !== '') {
+        if (!empty($item['issn'])) {
           if (search_array($item['issn'], $journals)) {
 
             $date = new DateTime($item['date']);
@@ -178,3 +178,4 @@ file_put_contents($jsonFile,json_encode($upd));
 //do some housekeeping
 remove_ancient_cache_files();
 ?>
+
