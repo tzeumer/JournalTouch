@@ -431,9 +431,10 @@ foreach ($journals as $j) {
     // @todo: seriously; make this better/cleaner
     $toclink = $rss = '';
     if ($j['metaGotToc'] == 'JToc') {
-        $toclink = '<a href="http://www.journaltocs.ac.uk/index.php?action=tocs&issn='.$j['issn'].'" class="button popup meta_toc" title="'.__('Via JournalTocs').'"><i class="fi-like"></i> '.$cfg->translations['meta_toc'][$lang].'</a> ';
-        // RSS only if JournalTocs is source
-        if ($cfg->prefs->rss && $j['metaGotToc'] == 'JToc') $rss = '<a href="rss.php?issn='.$j['id'].'" class="button popup meta_rss"><i class="fi-rss"></i> '.__('RSS').'</a> ';
+        // 2016-12-21 (https://github.com/bibliocoll/JournalTouch/issues/96) TZ
+        // 2018-02-08: For this reason the TOC button is now hidden above the frame in js/conduit.js
+        //$toclink = '<a href="http://www.journaltocs.ac.uk/index.php?action=tocs&issn='.$j['issn'].'" class="button popup meta_toc" title="'.__('Via JournalTocs').'"><i class="fi-like"></i> '.$cfg->translations['meta_toc'][$lang].'</a> ';
+        $toclink = '<a href="#'.$j['issn'].'" class="button cr_getTOC meta_toc" title="'.__('Via JournalTocs').'"><i class="fi-like"></i> '.$cfg->translations['meta_toc'][$lang].'</a> ';
         // @todo 2018-02-08: disable RSS because showing JournalToc page in iframe is broken because of sameorigin policy
         //if ($cfg->prefs->rss && $j['metaGotToc'] == 'JToc') $rss = '<a href="rss.php?issn='.$j['id'].'" class="button popup meta_rss"><i class="fi-rss"></i> '.__('RSS').'</a> ';
     }

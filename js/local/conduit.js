@@ -96,6 +96,9 @@ function fetch_metabuttons_toc(issn, para_caching, para_pubdate) {
     $('#externalPopover .metaInfo a').attr('target', 'externalFrame'); // on click show content in frame
     $('#externalPopover .metaInfo a').addClass('historyAdd'); // remove popup class from buttons
     $('#externalPopover .metaInfo').prepend(custom_button); // add a home button
+    
+    // @todo 2018-02-08: disable TOC button above from because showing JournalToc page in iframe is broken (sameorigin policy)
+    $('#externalPopover .meta_toc').hide();
 
     // Add inline back button
     backlink = '<a id="frameBack_inline" class="button round hidden" data-history="0" onclick="history.go(-1)"><i class="fi-arrow-left"></i></a> ';
