@@ -353,7 +353,13 @@ class GetJournalInfos {
             $jt_title     = preg_replace($tit_patterns, $tit_replacements, $article->title);
             $jt_abstract  = strip_tags(preg_replace($patterns, $replacements, $article->description));
             $jt_link      = (string)$article->link;
-            $jt_source    = preg_replace($tit_patterns, $tit_replacements, $article->children('dc', TRUE)->source);
+            // @note 2018-02-08 "dc:source" seems to be ISSNs now, while the journal title seems to be always in "prism:PublicationName" now
+            // Not completely sure, therefore keep dc:source as fallback
+            if ($article->children('prism', TRUE)->PublicationName) {
+                $jt_source    = preg_replace($tit_patterns, $tit_replacements, $article->children('prism', TRUE)->PublicationName);
+            } else {
+                $jt_source    = preg_replace($tit_patterns, $tit_replacements, $article->children('dc', TRUE)->source);
+            }
 
             // DOI
             $jt_doi = (string)$article->children('dc', TRUE)->identifier; // must be there and only one ???
