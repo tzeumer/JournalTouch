@@ -43,8 +43,7 @@ class GetCover {
     /// \brief \b ARY List of generic cover sources that can be enabled for checking via this class; change order if you prefer on over the other
     public $src_genric  = array('STMcovers'     => 1,
                                 'JournalTocs'   => 1,
-                                'Lehmanns'      => 1,
-                                'SubscribeToJournals' => 1);
+                                'Lehmanns'      => 1);
 
     /// \brief \b ARY List of Publishers for cover download; Names are as JournalTocs returns them
     public $src_publisher = array(  'DeGruyter' => 1,
@@ -593,31 +592,6 @@ class GetCover {
 
 
     /**
-     * @brief   Download cover from Subscribe to Journals
-     *
-     * @note    2015-10-27: Works fine. Pretty ok, but large covers are square
-     *          (white border), yet cropped pretty good
-     *
-     * @return \b true if cover is found, else false
-     */
-    public function get_generic_SubscribeToJournals($large = false) {
-        // small: http://subscribetojournalsonline.com/image/cache/data/0364_0094-140x180.jpg
-        // large: http://subscribetojournalsonline.com/image/cache/data/0963_9268-600x600.jpg
-        $base_url   = "http://subscribetojournalsonline.com//image/cache/data/";
-        $file_name  = str_replace('-', '_', $this->issn);
-        $file_name .= ($large) ? '-600x600' : '-140x180';
-        $ext        = 'jpg';
-
-        $url        = $base_url.$file_name.'.'.$ext;
-
-        $status = $this->_save_image($url, $ext);
-
-        if (!$status) $this->_reset_properties();
-        return $status;
-    }
-
-
-    /**
      * @brief   Download cover from Journal Covers Database (STM)
      *
      * @note    2015-10-27: Works fine
@@ -774,12 +748,6 @@ class GetCover {
         $this->_normalize_issn('1765-4629');
         $this->get_generic_STMcovers();
         echo 'STMcovers ('.$this->cover_size.' KB)<br><img src="'.$this->cover_path.'"><br>';
-        $this->_reset_properties();
-
-        // Test SubscribeToJournals
-        $this->_normalize_issn('0963-9268');
-        $this->get_generic_SubscribeToJournals();
-        echo 'SubscribeToJournals ('.$this->cover_size.' KB)<br><img src="'.$this->cover_path.'"><br>';
         $this->_reset_properties();
 
         // Test DeGruyter

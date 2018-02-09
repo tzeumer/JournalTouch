@@ -677,11 +677,6 @@ function frm_input_translatable($name, $value, $label = '', $aria = '', $textare
                                 <label for="cfg_ary[covers][src_genric][Lehmanns]">Lehmanns</label>
                                 <a href="http://www.lehmanns.de/" class="button tiny info right" style="margin: 0" target="_blank">Website</a>
                         </li>
-                        <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
-                            <input type="checkbox" name="cfg_ary[covers][src_genric][SubscribeToJournals]" <?php echo frm_checked($cfg->covers->src_genric['SubscribeToJournals']) ?> aria-describedby="help_src_genric" />
-                                <label for="cfg_ary[covers][src_genric][SubscribeToJournals]">Subscribe To Journals</label>
-                                <a href="http://subscribetojournalsonline.com/" class="button tiny info right" style="margin: 0" target="_blank">Website</a>
-                        </li>
                     </ul>
                     <div id="help_src_genric" class="tooltip" role="tooltip" aria-hidden="true"><span><?php echo __('These are sites where covers for many publishers can be fetched. If a cover is found the remaining sources won\'t be checked.') ?></span></div>
                 </fieldset>

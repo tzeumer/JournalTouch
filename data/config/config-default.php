@@ -279,8 +279,7 @@ $cfg_demo->covers->api         = '';                     // You might input an u
 // These are sites where covers for many publishers can be fetched
 $cfg_demo->covers->src_genric  = array('STMcovers'           => 0,
                                 'JournalTocs'           => 0,
-                                'Lehmanns'              => 0,
-                                'SubscribeToJournals'   => 0);
+                                'Lehmanns'              => 0);
 // For these publishers JournalTouch provides a way for direct cover download
 $cfg_demo->covers->src_publisher = array('DeGruyter' => 0,
                                     'Elsevier'  => 0,
