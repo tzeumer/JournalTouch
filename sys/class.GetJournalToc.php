@@ -439,7 +439,7 @@ class GetJournalInfos {
             	'content' => json_encode(array_keys($missing_dois)),
             	'header' => 'Content-Type: application/json',
             )));
-            $cr_json = file_get_contents('http://search.crossref.org/links', null, $context);
+            $cr_json = file_get_contents('http://search.crossref.org/references', null, $context);
             $obj = ($cr_json) ? json_decode($cr_json) : false;
             if ($obj) {
                 foreach ($obj->results as $result) {
