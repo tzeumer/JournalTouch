@@ -1,6 +1,6 @@
 <?php
 /**
- * @brief   Povides toc for an issn. Either from JournalToc or from CrossRef
+ * @brief   Provides toc for an issn. Either from JournalToc or from CrossRef
  *
  * @notes   Interesting stuff
  * - http://zetoc.mimas.ac.uk/ (uk only...)
@@ -209,13 +209,12 @@ class GetJournalInfos {
         }
 
         $timestring = (isset($toc['update_date'])) ? date('c', strtotime($toc['update_date'])) : __('Sorry, I could not find any information about the publishing date');
-    /*
     $journal = $toc['source'][0];
     $journal .= ($toc['volume'][0])                    ? ', Vol. '.$toc['volume'][0] : '';
     $journal .= ($toc['issue'][0])                     ? ', Nr. '.$toc['issue'][0]   : '';
     $journal .= ($toc['volume'][0] && $toc['year'][0]) ? ' ('.$toc['year'][0].')'    : '';
-     */
-        $html  = '<h4 class="small-10 columns">'.$toc['source'][0].'</h4>';
+
+    $html  = '<h4 class="small-10 columns">'.$journal.'</h4>';
         $html .= '<h6 class="small-10 columns"><i class="fi-asterisk"></i> '. __('last update:') .' <time class="timeago" datetime="'.$timestring.'">'.$timestring.'</time> <i class="fi-asterisk"></i></h6>';
 
         // sort by date newest to oldest
@@ -408,7 +407,7 @@ class GetJournalInfos {
             $toc['page'][]     = $jt_page;
 
             $toc['source'][]   = $jt_source;
-            $toc['year'][]     = date('Y', strtotime($jt_date));
+            $toc['year'][]     = ($jt_date) ? date('Y', strtotime($jt_date)) : '';
             $toc['volume'][]   = $jt_volume;
             $toc['issue'][]    = $jt_issue;
 
