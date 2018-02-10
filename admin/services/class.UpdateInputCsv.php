@@ -310,7 +310,7 @@ class GetJournalInfos {
             $jt_publisher = htmlspecialchars_decode($xml->item->children('dc', TRUE)->publisher);
             $jt_subjects  = str_replace(" ", "_", ucwords(strtolower($xml->item->children('dc', TRUE)->subject)));
             $jt_rights    = $xml->item->children('dc', TRUE)->rights;
-            $this->log .= "<b>MATCH for JT (meta)</b>: <a href=\"$jt_link\" target=\"_blank\">$jt_title (=".$this->journal_row['title'].")</a> (p: $jt_pIssn /e: $jt_eIssn) von $jt_publisher ($jt_rights). Thema: $jt_subjects (<a href=\"$jtURL\" target=\"_blank\">JT</a>).<br>";
+            $this->log .= "<b>MATCH for JT (meta)</b>: <a href=\"$jt_link\" target=\"_blank\">$jt_title ((your set title)=".$this->journal_row['title'].")</a> (p: $jt_pIssn /e: $jt_eIssn) von $jt_publisher (License: $jt_rights). Subjects: $jt_subjects (<a href=\"$jtURL\" target=\"_blank\">JT</a>).<br>";
 
             // Use jt_titel if no title given in original file
             if (!$this->journal_row['title']) $this->journal_row['title'] = preg_replace( "/\r|\n/", "", $jt_title);
@@ -331,7 +331,7 @@ class GetJournalInfos {
             // Add new issns, nothing to lose, since we search via issn and found something
             if ($this->amend_issn) {
                 if ($jt_pIssn) $this->journal_row['p_issn'] = $jt_pIssn;
-                if ($jt_pIssn) $this->journal_row['e_issn'] = $jt_eIssn;
+                if ($jt_eIssn) $this->journal_row['e_issn'] = $jt_eIssn;
             }
 
             $this->hits_jt_meta++;
@@ -383,7 +383,7 @@ class GetJournalInfos {
         else {
             $is_new = false;
             $this->hits_jt_badDate++;
-            $this->log .= "<b>MESSY DATE for JT (recent)</b>: ".$this->journal_row['title']." ($this->issn) got a <a href=\"$jtURL\" target=\"_blank\">TOC</a> but no information about publishing date or I can't evaluate it<br>";
+            $this->log .= "<b>JT (recent) with MESSY DATE</b>: ".$this->journal_row['title']." ($this->issn) got a <a href=\"$jtURL\" target=\"_blank\">TOC</a> but no information about publishing date or I can't evaluate it<br>";
         }
 
         $this->journal_row['date'] = $recent_date;

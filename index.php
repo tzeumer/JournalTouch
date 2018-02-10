@@ -117,7 +117,7 @@ foreach ($filters_used as $filter_key => $filter_count) {
     }
 }
 
-$columns = 3; // How many columns? @note: currently only 3, bad you get the idea and could easily change it
+$columns = 3; // How many columns? @note: currently only 3, but you get the idea and could easily change it
 // Sort alphabetically for current language and output list
 if (isset($filter_list)) {
     ksort($filter_list);
