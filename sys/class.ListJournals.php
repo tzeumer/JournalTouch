@@ -211,7 +211,7 @@ class ListJournals
                         $multiplier = $this->GetTagSizeLogarithmic($count, $tag_min, $tag_max, 1, $cssClasses+1);
                         $css = 'tagcloud'.$multiplier;
                         $tag_print = str_replace('_', ' ', $tag);
-                        $cloud .= '<span class="tagentry '.$css.'"><a class="filter" id="tag-'.$tag.'" href="javascript:;">'.$tag_print.'</a> ('.$count.')</span> ';
+                        $cloud .= '<span class="tagentry '.$css.'"><a class="filter" id="tag-'.$tags = str_replace('.', '', $tag).'" href="javascript:;">'.$tag_print.'</a> ('.$count.')</span> ';
                     }
                 }
             }
@@ -317,6 +317,7 @@ class ListJournals
                     $tagcloud = array_merge($tagcloud, $tags_row);
                     $tags = implode(' tag-', $tags_row);
                     $tags = 'tag-'.$tags;
+                    $tags = str_replace('.', '', $tags); //breaking case was "dr."
                 }
 
                 $journals[] = array(
