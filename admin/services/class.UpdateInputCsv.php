@@ -406,34 +406,69 @@ class GetJournalInfos {
     /**
      * @brief   Fetches only journal infos from crossref
      *
-     * Currently only doi... The only real use is THAT we know CrossRef provides
-     * data for a specific journal.
+     * Fetches some metadata and we know CrossRef provides data for the journal.
      *
      * @todo
      * - Keep parameters and add $row so this method can be used "alone"?
-     * - Maybe better (also publisher and many more infos): https://api.crossref.org/journals/issn
-     * @see https://github.com/CrossRef/rest-api-doc/blob/master/rest_api.md
      *
+     * Changes
+     * 2018-02-10: 
+     * - Switched to Api from (broken?) http://search.crossref.org/dois?type=Journal&q=$issn
+     * - This does not provide a website anymore (maybe it's somehow possible?)
+     * 
      * @param $issn    \b STR  Journal ISSN
      * @return \b BOL True if journal is found, else false
      */
     public function crossref_fetch_meta($issn) {
-        $crURL  = "http://search.crossref.org/dois?type=Journal&q=$issn";
-        $crJson = file_get_contents($crURL);
+        $cr_eIssn = $cr_pIssn = $cr_subjects = '';
 
+        //http://api.crossref.org/journals/0002-3752/works?sort=published&order=desc
+        $crURL  = "http://api.crossref.org/journals/$issn";
+        $crJson = file_get_contents($crURL);
         $crJournal = json_decode($crJson, true);
 
-        $crLink = false;
-        if (isset($crJournal[0]['doi'])) $crLink = $crJournal[0]['doi'];
-        if (isset($crJournal[0]['fullCitation'])) $crTitle = $crJournal[0]['fullCitation'];
+        if ($crJournal['status'] == 'ok') {
+            $cr_title     = $crJournal['message']['title'];
+            $cr_publisher = $crJournal['message']['publisher'];
+            // ISSNs
+            if (isset($crJournal['message']['issn-type'])) {
+                foreach ($crJournal['message']['issn-type'] as $id => $type) {
+                    if ($type['type'] == 'electronic') $cr_eIssn = $type['value'];
+                    if ($type['type'] == 'print') $cr_pIssn = $type['value'];
+                }
+            }            
+            // Tags (always Scopus data I think)
+            if (count($crJournal['message']['subjects']) > 0) {
+                foreach ($crJournal['message']['subjects'] as $id => $category) {
+                    $cr_subjects[] = $category['name'];
+                }
+                $cr_subjects = implode(", ", $cr_subjects);
+            }            
 
-        if ($crLink) {
-            if (!$this->journal_row['metaWebsite']) $this->journal_row['metaWebsite'] = $crLink;
+            // Save tags with CR prefix
+            $csv_tags = '';
+            if ($cr_publisher) $newTags[] = 'CRpub-'.str_replace(',', ' ', $cr_publisher);
+            if ($cr_subjects)  $newTags[] = str_replace(', ', ', CRtag-', $cr_subjects);
+            if ($newTags) $csv_tags = implode(', ', $newTags);
+            $this->journal_row['tags'] = ($this->journal_row['tags']) ? $this->journal_row['tags'].', '.$csv_tags : $csv_tags;
+
+            // Only use cr_titel if no title given in original file
+            if (!$this->journal_row['title']) $this->journal_row['title'] = $cr_title;
+
+            // Add Publisher
+            $this->journal_row['publisher'] = $cr_publisher;
+
+            // Add new issns, nothing to lose, since we search via issn and found something
+            if ($this->amend_issn) {
+                if ($cr_pIssn) $this->journal_row['p_issn'] = $cr_pIssn;
+                if ($cr_pIssn) $this->journal_row['e_issn'] = $cr_eIssn;
+            }
+
+            $this->log .= "<b>MATCH for JT (meta)</b>: $cr_title (=".$this->journal_row['title'].") (p: $cr_pIssn /e: $cr_eIssn) von $cr_publisher. Themen: $cr_subjects.<br>";
+            
             $this->journal_row['metaGotToc'] = 'CRtoc';
-            $this->log .= "<b>MATCH for CrossRef (meta)</b>: <a href=\"$crLink\" target=\"_blank\">$crTitle (=".$this->journal_row['title'].")</a>.<br>";
-
             $this->hits_cr_meta++;
-            return true;
+            return true;        
         }
         else {
             $this->journal_row['metaGotToc'] = 'None';
