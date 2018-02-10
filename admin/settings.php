@@ -775,12 +775,14 @@ function frm_input_translatable($name, $value, $label = '', $aria = '', $textare
                             <label for="cfg[kiosk][policy_NoSendLib]"><?php echo (__('Disable').' "'.__('Send to library to get PDFs').'"') ?>?</label><br />
                             <div id="help_kiosk_policy_NoSendLib" class="tooltip" role="tooltip" aria-hidden="true"><span><?php echo __('Don\'t allow users to send request for PDFs to library on kiosk pc\'s. To completly disable this feature, go to "Settings"') ?></span></div>
                 </fieldset>
+                <!-- @todo 2018-02-08: disable RSS because showing JournalToc page in iframe is broken because of sameorigin policy
                 <fieldset>
                     <legend><?php echo __('Policies: Main page') ?></legend>
                         <input type="checkbox" name="cfg[kiosk][policy_NoRSS]" <?php echo frm_checked($cfg->kiosk->policy_NoRSS) ?> aria-describedby="help_kiosk_policy_NoRSS" />
                             <label for="cfg[kiosk][policy_NoRSS]"><?php echo __('Disable RSS meta button') ?>?</label><br />
                             <div id="help_kiosk_policy_NoRSS" class="tooltip" role="tooltip" aria-hidden="true"><span><?php echo __('Don\'t show RSS button in meta menu on kiosk pc\'s. Of little use there.') ?></span></div>
                 </fieldset>
+                -->
             </div>
             <div class="content" id="formTab8">
                 <h3><?php echo __('Mailing Settings') ?></h3>
