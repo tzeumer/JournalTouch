@@ -460,8 +460,113 @@ class GetJournalInfos {
     }
 
 
+        /**
+     * @brief   Fetches complete toc from CrossRef API and return array with fields
+     *
+     * This method was added 2018-02-10 and replaces GetJournalInfos::crossref_fetch_toc_deprecated()
+     *
+     * @author Tobias Zeumer <tzeumer@verweisungsform.de>
+     *
+     * @todo: could compare 'issued', 'published-print' and 'published-online'
+     *        and get most recent entry which must (should?) be part of the last 
+     *        journal issue
+     * @todo  Append &mailto=$this->jt->account to Crossref-API (https://github.com/CrossRef/rest-api-doc#meta)
+     *
+     * @param $issn    \b STR  Journal ISSN
+     * @return \b BOL True if journal is found, else false
+     */
+    public function crossref_fetch_toc($issn) {
+        $json = "https://api.crossref.org/journals/$issn/works?sort=published&order=desc&rows=1";
+        $file = file_get_contents($json);
+        $issue_data = json_decode($file, true);
+
+        if ($issue_data['status'] == 'ok') {
+            $issues_data = $issue_data['message']['items'][0];
+            $issues_dateparts = $issues_data['issued']['date-parts'][0];
+            $cr_year  = (isset($issues_dateparts[0])) ? $issues_dateparts[0] : false;
+            $cr_month = (isset($issues_dateparts[1])) ? $issues_dateparts[1] : '01'; // default to January
+            $cr_day   = (isset($issues_dateparts[2])) ? $issues_dateparts[2] : '01'; // default to first day of month (print(online sometimes more specific AND differ from each other)
+            
+            if (strlen($cr_month) < 2)   $cr_month = '0'.$cr_month;
+            if (strlen($cr_day) < 2)     $cr_day   = '0'.$cr_day;
+            
+            if ($cr_year) {
+                $cr_date    = "$cr_year-$cr_month-$cr_day";
+            } else {
+                return false;
+            }
+            
+            $cr_vol     = (isset($issues_data['volume'])) ? $issues_data['volume'] : false;
+            $cr_issue   = (isset($issues_data['issue'])) ? $issues_data['issue'] : false;
+            $cr_source  = $issues_data['container-title'][0] . ", Vol. $cr_vol, No. $cr_issue ($cr_date)";   
+        } else {
+            return false;
+        }
+
+        // Now get all from the issue date (not exactly sure how 'created' and 'deposited')
+        // compare to this - probably it would be easier to use the timestamps of either
+        $json = "https://api.crossref.org/journals/$issn/works?filter=from-pub-date:$cr_year-$cr_month-$cr_day&rows=40";
+        $file = file_get_contents($json);
+        $issue = json_decode($file, true);
+
+        if ($issue['status'] == 'ok') {
+            // Article infos per article
+            foreach ($issue['message']['items'] as $id => $article) {
+                // Author(s)
+                if (isset($article['author'])) {
+                    foreach ($article['author'] as $name_parts) {
+                        $name  = (isset($name_parts['given']))  ? $name_parts['given']. ' '  : '';
+                        $name .= (isset($name_parts['family'])) ? $name_parts['family'] : '';
+                        $cr_authors[] = $name;
+                    }
+                } else {
+                    $cr_authors = array();
+                }
+                
+                $cr_title    = $article['title'][0]; // @todo: what would be assigned as a second title?
+                $cr_doi      = $article['DOI'];
+                $cr_link     = (isset($article['link'][0]['URL'])) ? $article['link'][0]['URL'] : ''; // just get first
+                $cr_abstract = '';
+                $cr_page    = (isset($article['page']))  ? $article['page'] : '';
+
+                // sort string for toc output
+                $latin_sort = ($cr_page && is_numeric(substr($cr_page, 0, 1))) ? '0' : '1';
+                $cr_sort = $cr_year . '-' . $cr_vol . '-' . $cr_issue . '-'. $latin_sort .'-'. $cr_page;
+
+                // Add to array
+                $toc['authors'][]  = $cr_authors;
+                $toc['title'][]    = $cr_title;
+                $toc['link'][]     = $cr_link;
+                $toc['doi'][]      = $cr_doi;
+                $toc['abstract'][] = $cr_abstract;
+                $toc['date'][]     = $cr_date;
+                $toc['page'][]     = $cr_page;
+
+                $toc['source'][]   = $cr_source;
+                $toc['year'][]     = $cr_year;
+                $toc['volume'][]   = $cr_vol;
+                $toc['issue'][]    = $cr_issue;
+
+                $toc['update_date']= $cr_date;
+                $toc['sort'][]     = $cr_sort;
+            }
+            //print_r($issue);
+            //print_r($toc);
+        }
+
+        if ($toc) {
+            $this->toc = $toc;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    
     /**
      * @brief   Fetches complete toc from CrossRef and return array with fields
+     * @deprecated Switched to api
      *
      * @author Daniel Zimmel <zimmel@coll.mpg.de>
      * @author Tobias Zeumer <tzeumer@verweisungsform.de>
@@ -469,7 +574,7 @@ class GetJournalInfos {
      * @param $issn    \b STR  Journal ISSN
      * @return \b BOL True if journal is found, else false
      */
-    public function crossref_fetch_toc($issn) {
+    public function crossref_fetch_toc_deprecated($issn) {
         // results output is limited to 20 per page, so send at least two queries
         $records = array();
         for ($page = 1; $page <= 4; $page++) {

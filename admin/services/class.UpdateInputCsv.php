@@ -423,7 +423,7 @@ class GetJournalInfos {
         $cr_eIssn = $cr_pIssn = $cr_subjects = '';
 
         //http://api.crossref.org/journals/0002-3752/works?sort=published&order=desc
-        $crURL  = "http://api.crossref.org/journals/$issn";
+        $crURL  = "https://api.crossref.org/journals/$issn";
         $crJson = file_get_contents($crURL);
         $crJournal = json_decode($crJson, true);
 
@@ -486,42 +486,55 @@ class GetJournalInfos {
      * @note    This only makes sense if it is done on a daily basis, because
      *          "date" is set today if "year/vol/issue" has changed.
      *
-     * @note    "year/vol/issue" could be used in getCrossRefTOC.php to do an
-     *          easier filtering for the toc
-     *          Also: by checking for "CRnew" resp. "CTnew" the service to query
-     *          could easily be identified
-     *
      * @todo
-     * - IMPORTANT: Umm, $this->journal_row['date'] = $current_date is a bad idea?
-     *   Is this column used somewhere for checks?!?
      * - Maybe add (guess) update frequency to prevent unnecessary checks?
      * - Just comparing year/vol/issue should be sufficient, a closer look doesn't
      *   make sense?
+     *  
+     * @note
+     * 2018-02-10 Changed fetching data to api.
+     *  
      *
      * @param $issn    \b STR  Journal ISSN
      * @return \b BOL True if journal is found, else false
      */
     public function crossref_fetch_recent($issn, $max_age_days = 15) {
-        $crURL  = "http://search.crossref.org/dois?sort=year&rows=1&q=$issn";
+        $crURL = "https://api.crossref.org/journals/$issn/works?sort=published&order=desc&rows=1";
         $crJson = file_get_contents($crURL);
-
         $crArticle = json_decode($crJson, true);
 
-        parse_str(urldecode(html_entity_decode($crArticle[0]['coins'])), $coins);
+        if ($crArticle['status'] == 'ok') {
+            $issues_data = $crArticle['message']['items'][0];
+            $issues_dateparts = $issues_data['issued']['date-parts'][0];
+            $cr_year  = (isset($issues_dateparts[0])) ? $issues_dateparts[0] : false;
+            $cr_month = (isset($issues_dateparts[1])) ? $issues_dateparts[1] : '01'; // default to January
+            $cr_day   = (isset($issues_dateparts[2])) ? $issues_dateparts[2] : '01'; // default to first day of month (print(online sometimes more specific AND differ from each other)
+            
+            if (strlen($cr_month) < 2)   $cr_month = '0'.$cr_month;
+            if (strlen($cr_day) < 2)     $cr_day   = '0'.$cr_day;
+            
+            if ($cr_year) {
+                $cr_date = "$cr_year-$cr_month-$cr_day";
+            } else {
+                $cr_date = date('Y-m-d'); // Some date is required for later reference. But no date should not happen anymore
+            }
+            
+            $cr_vol     = (isset($issues_data['volume'])) ? $issues_data['volume'] : false;
+            $cr_issue   = (isset($issues_data['issue'])) ? $issues_data['issue'] : false;
+            $cr_source  = $issues_data['container-title'][0] . ", Vol. $cr_vol, No. $cr_issue ($cr_date)";   
+        } else {
+            return false;
+        }
 
         // Make issues comparable as year/vol/issue (we don't get more)
-        $current_issue = '';
-        $current_issue .= (isset($coins['rft_date']))   ? $coins['rft_date'].'/' : '/';
-        $current_issue .= (isset($coins['rft_volume'])) ? $coins['rft_volume'].'/' : '/';
-        $current_issue .= (isset($coins['rft_issue']))  ? $coins['rft_issue'] : '';
-        $current_date = date('Y-m-d');
+        $current_issue = "$cr_year/$cr_vol/$cr_issue";
 
         // Is this the first check?
         if ($this->journal_row['lastIssue']) {
             // Did anything change?
             if ($this->journal_row['lastIssue'] != $current_issue) {
                 $this->journal_row['new'] = 'CRnew';
-                $this->journal_row['date'] = $current_date;
+                $this->journal_row['date'] = $cr_issue;
                 $this->journal_row['lastIssue'] = $current_issue;
 
                 $this->log .= "<b>CrossRef (recent)</b>: ".$this->journal_row['title']." ($issn) - just found a new issue!";
@@ -532,13 +545,13 @@ class GetJournalInfos {
                 // is it still new?
                 $is_new = $this->get_datediff($this->journal_row['date'], $max_age_days);
 
-                $this->log .= "<b>CrossRef (recent)</b>: ".$this->journal_row['title']." ($issn) - found no new issue, but it is still new? $is_new<br />";
+                $this->log .= "<b>CrossRef (recent)</b>: ".$this->journal_row['title']." ($issn) - found no new issue, but it is still new (yes/no): $is_new<br />";
                 return $is_new;
             }
         }
         else {
             // Remember current data for next check
-            $this->journal_row['date'] = $current_date;
+            $this->journal_row['date'] = $cr_date;
             $this->journal_row['lastIssue'] = $current_issue;
             $this->log .= "<b>CrossRef (recent)</b>: ".$this->journal_row['title']." ($issn) was checked for the first time for a recent issue";
             return false;
