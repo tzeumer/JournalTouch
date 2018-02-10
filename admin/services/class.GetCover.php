@@ -14,6 +14,11 @@
  * @todo
  * - xxx
  *
+ * Changelog
+ * 2018-02-09: added set_error_handler in GetCover::__construct() for php
+ * Warnings that throws exceptions. Probably too hard, but seems to work nicely.
+ * 
+ *
  * @author Tobias Zeumer <tzeumer@verweisungsform.de>
  */
 class GetCover {
@@ -78,6 +83,15 @@ class GetCover {
      */
     public function __construct($standalone = false) {
         $this->standalone = $standalone;
+        
+        // Since we do a lot of try and error, warnings are common; catch them
+        set_error_handler(
+            function($errno, $errstr, $errfile, $errline, array $errcontext) {
+                // @-operator suppressed error
+                if (0 === error_reporting()) return false;
+
+                throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+            }, E_WARNING);        
 
         if ($this->standalone == false) {
             require(__DIR__.'/../../sys/bootstrap.php');
@@ -97,12 +111,12 @@ class GetCover {
 
 
     /**
-     * @brief   Deconstructor. Shows script time...
+     * @brief   Restore default php error handler (for warnings)
      */
     function __destruct() {
-        // Nothing yet
+        restore_error_handler();
     }
-
+    
 
     /**
      * @brief   Make sure the issn is as required by a specific service
@@ -180,7 +194,7 @@ class GetCover {
             $this->log .= '&gt; Found manually provided cover<br>';
             return true;
         } else {
-            $this->log .= '&gt; No manually provided local cover found<br>';
+            $this->log .= '&gt; No manually provided local cover file found (like cover/data/issn.xxx)<br>';
         }
 
         // Still going? Check if one was already downloaded
@@ -413,7 +427,13 @@ class GetCover {
         $url = $base_url.$this->issn;
         $ext        = 'jpg';
 
-        $raw = file_get_contents($url);
+        try {
+            $raw = file_get_contents($url);
+        } catch (Exception $e) {
+            //$this->log .= 'Exception (Warning) in get_publisher_sage: '.  $e->getMessage() ."\n";
+            $this->_reset_properties();
+            return false;
+        }
         $newlines = array("\t","\n","\r","\x20\x20","\0","\x0B");
         $content = str_replace($newlines, "", html_entity_decode($raw));
 
@@ -450,7 +470,14 @@ class GetCover {
         $url = $base_url.$this->issn;
         $ext        = 'jpg';
 
-        $raw = file_get_contents($url);
+        try {
+            $raw = file_get_contents($url);
+        } catch (Exception $e) {
+            //$this->log .= 'Exception (Warning) in get_publisher_springer: '.  $e->getMessage() ."\n";
+            $this->_reset_properties();
+            return false;
+        }
+
         $newlines = array("\t","\n","\r","\x20\x20","\0","\x0B");
         $content = str_replace($newlines, "", html_entity_decode($raw));
 
@@ -492,7 +519,13 @@ class GetCover {
         $url = $base_url.$this->issn;
         $ext      = 'gif';
 
-        $raw = file_get_contents($url);
+        try {
+            $raw = file_get_contents($url);
+        } catch (Exception $e) {
+            //$this->log .= 'Exception (Warning) in unavailable_get_publisher_Wiley: '.  $e->getMessage() ."\n";
+            $this->_reset_properties();
+            return false;
+        }
         $newlines = array("\t","\n","\r","\x20\x20","\0","\x0B");
         $content = str_replace($newlines, "", html_entity_decode($raw));
 
@@ -561,7 +594,13 @@ class GetCover {
         $base_url = "http://size.lehmanns.de/index.php?request=handler_public_ZSSuche.titelsuche&anzeigemenge=1&action=suchen&issn=";
         $url = $base_url.$this->issn; // bindestrich muss erhalten bleiben!
 
-        $raw = file_get_contents($url);
+        try {
+            $raw = file_get_contents($url);
+        } catch (Exception $e) {
+            //$this->log .= 'Exception (Warning) in get_generic_Lehmanns: '.  $e->getMessage() ."\n";
+            $this->_reset_properties();
+            return false;
+        }
         $newlines = array("\t","\n","\r","\x20\x20","\0","\x0B");
         $content = str_replace($newlines, "", html_entity_decode($raw));
 
@@ -620,12 +659,13 @@ class GetCover {
         // Hmm, sometimes an empty url is passed, but why...
         if (!$url) return false;
 
-        $headers = get_headers($url);
-        $code = substr($headers[0], 9, 3);
+        try {
+            $headers = get_headers($url);
+            $code = substr($headers[0], 9, 3);
 
-        if ($code == '200' || $code == '301') {
-            return true;
-        } else {
+            if ($code == '200' || $code == '301') return true;
+        } catch (Exception $e) {
+            // $this->log .= 'Exception (Warning) in _verify_http_response_code: '.  $e->getMessage() ."\n";
             return false;
         }
     }
@@ -656,9 +696,14 @@ class GetCover {
         if($this->_verify_http_response_code($url)) {
             $this->cover_type   = $ext;
             $this->cover_path   = $img_path;
-            $this->cover_binary = file_get_contents($url);
-            $this->cover_size   = round(strlen($this->cover_binary) / 1024, 2);
-            $this->cover_age    = time();
+            try {
+                $this->cover_binary = file_get_contents($url);
+                $this->cover_size   = round(strlen($this->cover_binary) / 1024, 2);
+                $this->cover_age    = time();
+            } catch (Exception $e) {
+                //$this->log .= 'Exception (Warning) in _save_image: '.  $e->getMessage(). "\n";
+                return false;
+            }
 
             // Don's save really small files (less than 1 KB)
             if ($this->cover_size < 1) {
@@ -667,9 +712,9 @@ class GetCover {
                 $status = file_put_contents($img_path, $this->cover_binary);
             }
 
-            if (!$status) $this->log .= 'Saving file failed - path problem?<br>';
+            if (!$status) $this->log .= "Saving file failed. Probably hit a 404 page with an image file url. $url<br>";
 
-            return true;
+            return $status;
         } else {
             return false;
         }
