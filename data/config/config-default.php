@@ -134,6 +134,7 @@ $cfg_demo->api->jt->premium  = false;    // Premium: Set to true if you got a pr
 $cfg_demo->api->jt->upd_show = false;    // Premium: Uses infos from outfile. Slows page loading down
 $cfg_demo->api->jt->updates  = 'http://www.journaltocs.ac.uk/api/journals/latest_updates?user='; // Premium: Update URL
 
+$cfg_demo->api->cr->mail    = '';          // A mail is not required. But if set then CrossRef redirects queries to a special pool of API machines that are reserved for polite users
 
 
 $cfg_demo->kiosk = new stdClass();

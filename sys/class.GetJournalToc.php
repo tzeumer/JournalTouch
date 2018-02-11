@@ -75,6 +75,7 @@ class GetJournalInfos {
         require('bootstrap.php');
         $this->api_all  = $cfg->api->all;
         $this->jt       = $cfg->api->jt;
+        $this->cr       = $cfg->api->cr;
         $this->prefs    = $cfg->prefs;
         $this->sys      = $cfg->sys;
 
@@ -470,14 +471,14 @@ class GetJournalInfos {
      * @todo: could compare 'issued', 'published-print' and 'published-online'
      *        and get most recent entry which must (should?) be part of the last 
      *        journal issue
-     * @todo  Append &mailto=$this->jt->account to Crossref-API (https://github.com/CrossRef/rest-api-doc#meta)
      *
      * @param $issn    \b STR  Journal ISSN
      * @return \b BOL True if journal is found, else false
      */
     public function crossref_fetch_toc($issn) {
-        $json = "https://api.crossref.org/journals/$issn/works?sort=published&order=desc&rows=1";
-        $file = file_get_contents($json);
+        $json  = "https://api.crossref.org/journals/$issn/works?sort=published&order=desc&rows=1";
+        $json .= ($this->cr->mail) ? '&mailto='.$this->cr->mail : '';
+        $file  = file_get_contents($json);
         $issue_data = json_decode($file, true);
 
         if ($issue_data['status'] == 'ok') {
@@ -505,8 +506,9 @@ class GetJournalInfos {
 
         // Now get all from the issue date (not exactly sure how 'created' and 'deposited')
         // compare to this - probably it would be easier to use the timestamps of either
-        $json = "https://api.crossref.org/journals/$issn/works?filter=from-pub-date:$cr_year-$cr_month-$cr_day&rows=40";
-        $file = file_get_contents($json);
+        $json  = "https://api.crossref.org/journals/$issn/works?filter=from-pub-date:$cr_year-$cr_month-$cr_day&rows=40";
+        $json .= ($this->cr->mail) ? '&mailto='.$this->cr->mail : '';
+        $file  = file_get_contents($json);
         $issue = json_decode($file, true);
 
         if ($issue['status'] == 'ok') {

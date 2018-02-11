@@ -626,6 +626,12 @@ function frm_input_translatable($name, $value, $label = '', $aria = '', $textare
                             <label for="cfg[api][jt][upd_show]"><?php echo __('Use premium data for live view (slow!)') ?></label>
                             <div id="help_upd_show" class="tooltip" role="tooltip" aria-hidden="true"><span><?php echo __('Uses premium infos to mark issues as new. Slows page loading down') ?></span></div>
                 </fieldset>
+                <fieldset>
+                    <legend><?php echo __('Api: CrossRef') ?></legend>
+                        <label for="cfg[api][jt][account]"><?php echo __('Mail for CrossRef API') ?></label>
+                            <input type="text" name="cfg[api][cr][mail]" value="<?php echo $cfg->api->cr->mail ?>" aria-describedby="help_cr" />
+                            <div id="help_cr" class="tooltip" role="tooltip" aria-hidden="true"><span><?php echo __('A mail is not required. But if set then CrossRef redirects queries to a special pool of API machines that are reserved for polite users') ?></span></div>
+                </fieldset>
             </div>
             <div class="content" id="formTab5">
                 <a href="#" data-reveal-id="help_coverSettingsmyModal" class="button right"><?php echo __('Information & Disclaimer') ?></a>

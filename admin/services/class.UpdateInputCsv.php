@@ -130,6 +130,7 @@ class GetJournalInfos {
         $this->csv_col  = $cfg->csv_col;
         $this->api_all  = $cfg->api->all;
         $this->jt       = $cfg->api->jt;
+        $this->cr       = $cfg->api->cr;
         $this->prefs    = $cfg->prefs;
     }
 
@@ -422,8 +423,8 @@ class GetJournalInfos {
     public function crossref_fetch_meta($issn) {
         $cr_eIssn = $cr_pIssn = $cr_subjects = '';
 
-        //http://api.crossref.org/journals/0002-3752/works?sort=published&order=desc
         $crURL  = "https://api.crossref.org/journals/$issn";
+        $crURL .= ($this->cr->mail) ? '?mailto='.$this->cr->mail : '';
         $crJson = file_get_contents($crURL);
         $crJournal = json_decode($crJson, true);
 
@@ -500,6 +501,7 @@ class GetJournalInfos {
      */
     public function crossref_fetch_recent($issn, $max_age_days = 15) {
         $crURL = "https://api.crossref.org/journals/$issn/works?sort=published&order=desc&rows=1";
+        $crURL .= ($this->cr->mail) ? '&mailto='.$this->cr->mail : '';
         $crJson = file_get_contents($crURL);
         $crArticle = json_decode($crJson, true);
 
