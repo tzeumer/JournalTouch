@@ -450,7 +450,7 @@ $(document).ready(function() {
 	});
 
 	// check if there are any items in cart on opening
-	$('#myArticles').click(function(){
+	$('#myArticles, #stickyBasket').click(function(){
 		if (simpleCart.quantity() === 0) {
 			$("#shelfIsEmpty").show();
 			$('#checkOutButton, #emptyCartButton, #emptyConfirmButton').hide();
