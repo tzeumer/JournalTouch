@@ -1,19 +1,27 @@
 # About
 JournalTouch provides a touch-optimized, responsive interface for browsing current journal table-of-contents.
 
-## Non official version
-The official version (0.4.5) of JournalTouch is maintained at https://github.com/bibliocoll/JournalTouch (please check there for installation and quick start information).
+## Official version
+The official version (0.4.5) of JournalTouch is maintained at [github.com/bibliocoll/JournalTouch](https://github.com/bibliocoll/JournalTouch).
 
-## This version
+## This non official version
 This version is a hybrid of a private effort and the version used at the [University Library (TUB HH)](http://www.tub.tuhh.de/) of the Hamburg University of Technology (TUHH).
+
+JournalTouch is not actively maintained by me. But occasionally I get notes on errors and problems that I then might or might not try to fix. The master branch gets what I consider to be safe changes. If you are really interested, you might check the latest development branch - it might be a step further.
 
 ### Changelog
 2018-02
 * JournalTocs: get journal title from a different field (seems to have changed)
-* CrossRef: Switches to api for getting data
+* CrossRef: Switched to api for getting data
 * Removed button linking to JournalTocs page for journal in an iframe (https://github.com/bibliocoll/JournalTouch/issues/96)
 * Removed RSS links support (for now)
 * Some minor fixes
+
+### Known Issues
+* Sometimes people ask how to add thousands of journals. Frankly, this is not the intended use of JournalTouch - the idea is a showcase of some of your most valued journals for casual (serendipity) browsing by visitors. If you really require more and are ready to pay money, maybe you should check out [browzine.com](https://browzine.com/). For example the [ETH Zürich is using browzine](https://www.ethz.ch/studierende/de/news/studierenden-news/2017/01/browzine-das-tool-zur-intuitiven-zeitschriftenrecherche.html), as well as the [University Duisbzrg-Essen](https://www.uni-due.de/ub/browzine.php),
+* JournalTocs sometimes provides no information about publication dates (this has always been the case; JournalTouch tries to do some guesswork)
+* JournalTouch has always primarily relied on JournalTocs. CrossRef always only was a fallback. But since switching to the CrossRef api, I noticed that dates (and probably authors and other fields) are much more reliably found there. Yet CrossRef offers no abstracts (which are part of JournalTouch's fun) and it can't simply be queried for the "articles of the latest issue". So for now I stick to JournalToc as primary source, while some mixing might be a good option in the future.
+
 
 
 # Installation
