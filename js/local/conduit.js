@@ -287,24 +287,14 @@ $(document).ready(function() {
 	});
 
 	// click on a journal
-	$('.getTOC, .cr_getTOC').click(function(event) {
+	$('.getTOC').click(function(event) {
         event.preventDefault();
 		$('#fillTOC').remove(); // clean up
 		$('#tocAlertBox, #tocNotFoundBox').hide(); // clean up
 
-        // Classic case JournalTocs
-        if ($(this).hasClass('getTOC')) {
-    		// Get data for specific journal
-    		var issn	= $(this).prevAll('span').attr('data-issn').trim();
-    		var pubdate = $(this).prevAll('span').attr('data-pubdate');
-        }
-        // 2015-11-28: For CrossRef we can't show the toc on crossref.org (like
-        // we do for JournalTocs by clicking on the Toc button). Show always
-        // parsed toc - @todo find way to show CR in iframe?
-        else {
-    		var issn	= $(this).parent().prevAll('span').attr('data-issn').trim();
-    		var pubdate = $(this).parent().prevAll('span').attr('data-pubdate');
-        }
+        // Get data for specific journal
+        var issn	= $(this).prevAll('span').attr('data-issn').trim();
+        var pubdate = $(this).prevAll('span').attr('data-pubdate');
 
 		// Check if cache is enabled
 		var para_caching = ($('body').attr('data-caching') === '1') ? '&cache=1' : '';
