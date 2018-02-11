@@ -211,9 +211,13 @@ class GetJournalInfos {
 
         $timestring = (isset($toc['update_date'])) ? date('c', strtotime($toc['update_date'])) : __('Sorry, I could not find any information about the publishing date');
         $journal = $toc['source'][0];
-        $journal .= ($toc['volume'][0])                    ? ', Vol. '.$toc['volume'][0] : '';
-        $journal .= ($toc['issue'][0])                     ? ', Nr. '.$toc['issue'][0]   : '';
-        $journal .= ($toc['volume'][0] && $toc['year'][0]) ? ' ('.$toc['year'][0].')'    : '';
+        // Sometimes the source contains not only the journal name, but the volume, issue and year. Guesswork...
+        // So far only seen for journals with volumes. Quick and dirty hack
+        if ($toc['volume'][0] && !strpos($toc['source'][0], $toc['volume'][0])) {
+            $journal .= ($toc['volume'][0])                    ? ', Vol. '.$toc['volume'][0] : '';
+            $journal .= ($toc['issue'][0])                     ? ', No. '.$toc['issue'][0]   : '';
+            $journal .= ($toc['volume'][0] && $toc['year'][0]) ? ' ('.$toc['year'][0].')'    : '';
+        }
 
         $html  = '<h4 class="small-10 columns">'.$journal.'</h4>';
         $html .= '<h6 class="small-10 columns"><i class="fi-asterisk"></i> '. __('last update:') .' <time class="timeago" datetime="'.$timestring.'">'.$timestring.'</time> <i class="fi-asterisk"></i></h6>';
@@ -336,6 +340,8 @@ class GetJournalInfos {
         $aut_patterns = $patterns;          $aut_replacements = $replacements;
         $aut_patterns[] = '/\(/';           $aut_replacements[] = '';
         $aut_patterns[] = '/\)/';           $aut_replacements[] = '';
+        $aut_patterns[] = '/^\W*?/';        $aut_replacements[] = ''; // String starts with non word characters
+        $aut_patterns[] = '/^\W*?$/';       $aut_replacements[] = ''; // Whole string has only non word characters
         // Remove emails
         $aut_patterns[] = '/.*\@.*\.[A-Za-z]{2,3}/';           $aut_replacements[] = '';
 
@@ -344,6 +350,10 @@ class GetJournalInfos {
         $tit_patterns[] = '/\(.+\)$/';      $tit_replacements[] = '';
         $tit_patterns[] = '/,$/';           $tit_replacements[] = '';
 
+        // Sometimes something like ": 6"
+        $vol_patterns = $patterns;          $vol_replacements = $replacements;
+        $vol_patterns[] = '/[\s:]+/';       $vol_replacements[] = '';        
+        
         $prev_date = false;
         $itemcount = 0;
         $toc       = array();
@@ -377,7 +387,7 @@ class GetJournalInfos {
             $jt_volume = '';
             $jt_issue  = '';
             $jt_page   = '';
-            $jt_volume  = preg_replace($patterns, $replacements, $article->children('prism', TRUE)->volume);
+            $jt_volume  = preg_replace($vol_patterns, $vol_replacements, $article->children('prism', TRUE)->volume);
             $jt_issue   = preg_replace($patterns, $replacements, $article->children('prism', TRUE)->number);
             $jt_page = strip_tags(preg_replace($patterns, $replacements, $article->children('prism', TRUE)->startingPage));
             $jt_page = ($jt_page) ? '-'.strip_tags(preg_replace($patterns, $replacements, $article->children('prism', TRUE)->endingPage)) : '';
