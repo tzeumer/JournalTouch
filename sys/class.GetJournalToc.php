@@ -194,8 +194,9 @@ class GetJournalInfos {
      *
      * @todo
      * - Hmm, $toc should really be a class property?
-     * - 2015-10-30: Added proxy option. It would be nice to add some guide if
-     *   there is no proxy (using $cfg->prefs->ip_subnet)...
+     * - timeago stuff may be fancy, but collides with multiple languages and 
+     *   caching of toc (english user calls toc, toc is cached, german user 
+     *   calls cached toc...). For now only english and short message
      *
      * @author Daniel Zimmel <zimmel@coll.mpg.de>
      * @author Tobias Zeumer <tzeumer@verweisungsform.de>
@@ -209,7 +210,7 @@ class GetJournalInfos {
             return false;
         }
 
-        $timestring = (isset($toc['update_date'])) ? date('c', strtotime($toc['update_date'])) : __('Sorry, I could not find any information about the publishing date');
+        $timestring = (isset($toc['update_date'])) ? date('c', strtotime($toc['update_date'])) : __('unavailable');
         $journal = $toc['source'][0];
         // Sometimes the source contains not only the journal name, but the volume, issue and year. Guesswork...
         // So far only seen for journals with volumes. Quick and dirty hack
@@ -220,7 +221,7 @@ class GetJournalInfos {
         }
 
         $html  = '<h4 class="small-10 columns">'.$journal.'</h4>';
-        $html .= '<h6 class="small-10 columns"><i class="fi-asterisk"></i> '. __('last update:') .' <time class="timeago" datetime="'.$timestring.'">'.$timestring.'</time> <i class="fi-asterisk"></i></h6>';
+        $html .= '<h6 class="small-10 columns"><i class="fi-asterisk"></i> '. __('Issue date:') .' <time class="timeago" datetime="'.$timestring.'">'.$timestring.'</time> <i class="fi-asterisk"></i></h6>';
 
         // sort by date newest to oldest
         asort($toc['sort']);
