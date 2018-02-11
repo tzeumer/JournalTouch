@@ -116,6 +116,7 @@ $cfg_demo->prefs->cache_main_enable = false;     // Basically JT only serves a s
 $cfg_demo->api = new stdClass();
 $cfg_demo->api->all = new stdClass();
 $cfg_demo->api->jt = new stdClass();
+$cfg_demo->api->cr = new stdClass();
 /**
  * API: Settings to fetch the table of contents
  *
