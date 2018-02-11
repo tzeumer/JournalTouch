@@ -441,9 +441,9 @@ class GetJournalInfos {
             // Tags (always Scopus data I think)
             if (count($crJournal['message']['subjects']) > 0) {
                 foreach ($crJournal['message']['subjects'] as $id => $category) {
-                    $cr_subjects[] = $category['name'];
+                    $subjects[] = $category['name'];
                 }
-                $cr_subjects = implode(", ", $cr_subjects);
+                $cr_subjects = implode(", ", $subjects);
             }            
 
             // Save tags with CR prefix
