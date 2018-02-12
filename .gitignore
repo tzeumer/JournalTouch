@@ -1,10 +1,9 @@
 # Changes in these folder/files should reasonably never be tracked/pushed
 admin/.htaccess
-admin/update/history/*
 data/*
 config.php
 
-# Some exclusions, so the folders always are created, even if initally empty
+# Some exclusions, so the folders always are created, even if initially empty
 !*.gitkeep
 !admin/upgrade/versions/.gitkeep
 !data/cache/.gitkeep

@@ -22,10 +22,16 @@ Changes
 
 Improvements
 - No more errors if new versions of JournalTouch provide new settings. They now always get loaded from default settings.
+- CrossRef: Switched to api for getting data
 
 
 Fixes
-- xxx
+- opening the cart via the "send articles" button in the lower right no longer leads to a cart with missing buttons
+- some more spelling fixes
+- JournalTocs: get journal title from a different field (seems to have changed)
+- Removed button linking to JournalTocs page for journal in an iframe (https://github.com/bibliocoll/JournalTouch/issues/96)
+- Removed RSS links support (for now)
+- Some minor fixes
 
 
 Known Issues
@@ -34,11 +40,12 @@ Known Issues
 
 
 Added 3rd party ressources
-- xxx: URL
+- updated ZURB Foundation 5 to most recent version (5.5.3)
 
 
 Credits
-- xxx
+- @realsobek for painstakingly reporting every issue he ran into during installation. thanks a bunch!
+- @realsobek, @MPIKGLibrary and @reicheltmediadesign for their bug reports and comments
 ';
 
 
