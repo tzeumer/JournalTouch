@@ -7,6 +7,14 @@ $myaction = $_GET;
 require_once($cfg->sys->basepath.'sys/class.CheckoutActions.php');
 /* setup methods & objects */
 $action = new CheckoutActions($cfg);
+
+if (isset($cfg->dbusers->userlist) && $cfg->dbusers->userlist === true) {
+    require_once($cfg->sys->basepath.'sys/class.GetUsers.php');
+    $userHandle = new GetUsers($cfg);
+    $users = $userHandle->getUsers();
+} else {
+    $users = false;
+}
 ?>
 <!doctype html>
 <!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
@@ -70,26 +78,23 @@ $action = new CheckoutActions($cfg);
                         <label><?php echo __('Your e-mail') ?>
 
 <?php
-$userHandle = new GetUsers($cfg);
-$users = $userHandle->getUsers();
-
 // If domain is empty, allow full emails; see also conduit.js
 $allowed = ($cfg->mail->domain) ? 'mail_domain' : 'mail_all';
 
-if ($users == false) {
-    $placeholder = ($cfg->mail->domain) ? __('your username') : __('Your e-mail');
+if ($users === false) {
+    $placeholder = ($cfg->mail->domain) ? __('your username') : __('Your e-mail address');
     print '<input name="username" id="'.$allowed.'" placeholder="'.$placeholder.'" type="text"/>';
 } else {
     print '<select name="username">';
     foreach ($users as $name=>$pw) {
-        print '<option>'.$name.'</option>';
+        print '<option>'.htmlentities($name).'</option>';
     }
     print'	</select>';
 }
 ?>
 
                         </label>
-                        <small id="errorUsername" class="error" style="display:none"><?php echo __('please choose a name') ?></small>
+                        <small id="errorUsername" class="error" style="display:none"><?php echo __('Please, choose a name.') ?></small>
 
                     </div>
                 </div>
@@ -97,7 +102,7 @@ if ($users == false) {
                 <div class="row">
                     <div class="small-12 columns">
                         <label><?php echo __('Your feedback message') ?>
-                            <textarea name="message" placeholder="<?php echo __('if you have any comments for us please put them here!'); ?>"><?php if (isset($_GET['message'])) { print $_GET['message']; } ?></textarea>
+                            <textarea name="message" placeholder="<?php echo __('If you have any comments for us please put them here!'); ?>"><?php if (isset($_GET['message'])) { print $_GET['message']; } ?></textarea>
                         </label>
                     </div>
                 </div>
@@ -242,15 +247,8 @@ if(isset($_POST['mailer']))
 
                 <div class="row sendArticlesToLib sendArticlesToUser">
 <?php
-if (isset($cfg->dbusers->userlist) && $cfg->dbusers->userlist === TRUE) {
-  require_once($cfg->sys->basepath.'sys/class.GetUsers.php');
-  $userHandle = new GetUsers($cfg);
-  $users = $userHandle->getUsers();
-} else {
-  $users = FALSE;
-}
-// if GetUsers failed or was turned off, allow entering an adress
-if ($users === FALSE) {
+// if GetUsers failed or was turned off, allow entering an address
+if ($users === false) {
     $placeholder = ($cfg->mail->domain) ? __('your username') : __('Your e-mail');
     $postfix     = ($cfg->mail->domain) ? '@'.$cfg->mail->domain : '';
     $coladd      = ($cfg->mail->domain) ? 3 : 0;
@@ -289,7 +287,7 @@ if ($users === FALSE) {
                 <div class="row sendArticlesToUser">
                     <div class="small-12 columns">
                         <label><?php echo __('Attach citations?') ?></label><!--<small class="error">beware: experimental feature</small>-->
-                        <input type="radio" id="attachFileEndnote" name="attachFile" value="endnote"><label for="attachFileEndnote">Endnote</label>
+                        <input type="radio" id="attachFileEndnote" name="attachFile" value="endnote"><label for="attachFileEndnote">Endnote/Citavi</label>
                         <!-- <input type="radio" id="attachFileBibTeX" name="attachFile" value="bibtex" disabled="disabled"><label for="attachFileBibTeX">BibTeX</label> -->
                         <input type="radio" id="attachFileCSV" name="attachFile" value="csv"><label for="attachFileBibTeX">CSV</label>
                     </div>

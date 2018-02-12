@@ -98,8 +98,9 @@ class ListJournals
         $td = strtotime($date);
         $cdate = date("Y-m-d", strtotime("+{$this->api_all->is_new_days} day", $td));
         /* if there is a $date (e.g. from csv), compare with current date */
-        $curDate = new DateTime(); // today
-        $myDate     = new DateTime($cdate);
+        $utcTz = new DateTimeZone("UTC");
+        $curDate = new DateTime(NULL, $utcTz); // today
+        $myDate = new DateTime($cdate, $utcTz);
 
         if ($myDate >= $curDate) {
             return $date;
@@ -286,6 +287,10 @@ class ListJournals
                 $row++;
                 $date = ($data[$this->csv_col->date]) ? $data[$this->csv_col->date] : $no_date;
                 $filter = (!empty($data[$this->csv_col->filter]) ? strtolower($data[$this->csv_col->filter]) : "any");
+                $filter = explode($this->csv_file->separator2, $filter);
+                foreach ($filter as $filterindex => $filtername) {
+                  $filter[$filterindex] = trim($filtername); //strip whitespace
+                }
                 $topJ = (!empty($data[$this->csv_col->important]) ? "topJ" : "");
                 $img = $this->getCover($myISSN);
                 $new = $this->isCurrent($data[$this->csv_col->date],$myISSN);

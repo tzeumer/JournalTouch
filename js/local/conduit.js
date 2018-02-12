@@ -130,55 +130,58 @@ function start_screensaver(srcDiv) {
     var usr_screensaver_activate = $(srcDiv).attr('data-activateSeconds') * 1000;
     var usr_screensaver_speed    = $(srcDiv).attr('data-animateSpeed');
 
-    start_timeout();
-
+		start_timeout();
     /**
      * [Basic screensaver] Function to set timer for displaying screensaver and
      * clearing basket
      * @return void
      */
+
     function start_timeout() {
-        // clear old timeouts
-		clearTimeout(s_saver);
-		clearTimeout(clear_basket);
-		clearTimeout(reset_screen);
+				// only do anything if meaningful timeouts are set
+		    if (usr_clear_basket > 0 && usr_screensaver_activate > 0) {
+		        // clear old timeouts
+						clearTimeout(s_saver);
+						clearTimeout(clear_basket);
+						clearTimeout(reset_screen);
 
-        // Reset stuff before 2 seconds before either basket or screensaver
-        // fires (whatever comes first)
-        // @todo: Does nearly the same as $('a.filter').click(function(){} - refactor
-        reset_timer = (Math.min(usr_clear_basket, usr_screensaver_activate)) - 2000;
-        reset_screen = setTimeout(function(){
-            // go to top first
-            $('html, body').animate({ scrollTop: 0 }, 'slow');
-    		// remove any open modal
-    		$('.reveal-modal').foundation('reveal', 'close');
-    		// reset alphabet
-    		$('#alphabet li a').show();
-            // Disable filters (if any are still set)
-            $('.listitem').show();
-            $('#filterPanel').fadeOut();
-            // Clear search field
-            $('#search').val('');
-        }, reset_timer);
+		        // Reset stuff 2 seconds before either basket or screensaver
+		        // fires (whatever comes first)
+		        // @todo: Does nearly the same as $('a.filter').click(function(){} - refactor
+		        reset_timer = (Math.min(usr_clear_basket, usr_screensaver_activate)) - 2000;
+		        reset_screen = setTimeout(function(){
+		            // go to top first
+		            $('html, body').animate({ scrollTop: 0 }, 'slow');
+		    		// remove any open modal
+		    		$('.reveal-modal').foundation('reveal', 'close');
+		    		// reset alphabet
+		    		$('#alphabet li a').show();
+		            // Disable filters (if any are still set)
+		            $('.listitem').show();
+		            $('#filterPanel').fadeOut();
+		            // Clear search field
+		            $('#search').val('');
+		        }, reset_timer);
 
-        clear_basket = setTimeout(function(){
-            if (usr_clear_basket > 0) simpleCart.empty();
-            $('#myArticles').removeClass('full');
-            $('#externalPopover').foundation('reveal', 'close');
-        }, usr_clear_basket);
+		        clear_basket = setTimeout(function(){
+		            if (usr_clear_basket > 0) simpleCart.empty();
+		            $('#myArticles').removeClass('full');
+		            $('#externalPopover').foundation('reveal', 'close');
+		        }, usr_clear_basket);
 
-        if (usr_screensaver_activate == 0) return; // screensaver is completely disabled
-        s_saver = setTimeout(function(){
-            // Use animation?
-            if (usr_screensaver_speed != 0) {
-                animateDiv();
-            }
-            // otherwise center div
-            else {
-                $(srcDiv).css({'left': '50%', 'margin-left': '-40%'});
-            }
-            $(srcDiv).fadeIn(900);
-        }, usr_screensaver_activate);
+		        if (usr_screensaver_activate == 0) return; // screensaver is completely disabled
+		        s_saver = setTimeout(function(){
+		            // Use animation?
+		            if (usr_screensaver_speed != 0) {
+		                animateDiv();
+		            }
+		            // otherwise center div
+		            else {
+		                $(srcDiv).css({'left': '50%', 'margin-left': '-40%'});
+		            }
+		            $(srcDiv).fadeIn(900);
+		        }, usr_screensaver_activate);
+				}
     };
 
     /**
@@ -209,7 +212,7 @@ function start_screensaver(srcDiv) {
         });
     };
     /**
-     * [Animated screensaver] Caluclate random new position for div
+     * [Animated screensaver] Calculate random new position for div
      * Credits go to Lee at https://stackoverflow.com/a/10386178
      * @return array with new coordinates
      */
@@ -224,7 +227,7 @@ function start_screensaver(srcDiv) {
         return [nh,nw];
     }
     /**
-     * [Animated screensaver] Caluclate random new speed for animation
+     * [Animated screensaver] Calculate random new speed for animation
      * Credits go to Lee at https://stackoverflow.com/a/10386178
      * @return float with speed value
      */
@@ -573,16 +576,18 @@ $(document).ready(function() {
 
 	// Open web link in popup ('on' works only from Reveal box!)
 	$(document).on("click","a.popup",function(event) {
-        event.preventDefault();
+    event.preventDefault();
 		//		$('a.popup').click(function(event) {
 		var url = $(this).attr("href");
-
-        // Load meta buttons above toc (if visible); but not on checkout page
-        if ($(this).parents('.listitem')) {
-    		issn = $(this).parents('.listitem').attr('data-issn').trim();
-            fetch_metabuttons_toc(issn);
-        }
-
+		try {
+      // Load meta buttons above toc (if visible); but not on checkout page
+      if ($(this).parents('.listitem')) {
+  		issn = $(this).parents('.listitem').attr('data-issn').trim();
+          fetch_metabuttons_toc(issn);
+      }
+		} catch (e) {
+			//console.log(e.message)
+		}
 		createModalFrame(url);
 		$('#externalPopover').foundation('reveal', 'open');
 		return false;

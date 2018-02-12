@@ -4,6 +4,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-03-25 14:46+0100\n"
 "PO-Revision-Date: 2016-03-25 14:46+0100\n"
+"POT-Creation-Date: 2016-03-06 18:25+0100\n"
+"PO-Revision-Date: 2016-03-06 18:26+0100\n"
 "Last-Translator: Tobias Zeumer <tobias.zeumer@tuhh.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -45,6 +47,7 @@ msgstr ""
 #: checkout.php:92
 #: checkout.php:284
 msgid "please choose a name"
+msgid "Please, choose a name."
 msgstr ""
 
 #: checkout.php:99
@@ -54,6 +57,7 @@ msgstr ""
 #: checkout.php:100
 #: checkout.php:301
 msgid "if you have any comments for us please put them here!"
+msgid "If you have any comments for us please put them here!"
 msgstr ""
 
 #: checkout.php:111

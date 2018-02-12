@@ -4,6 +4,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-03-25 14:46+0100\n"
 "PO-Revision-Date: 2016-03-25 14:49+0100\n"
+"POT-Creation-Date: 2016-03-06 18:22+0100\n"
+"PO-Revision-Date: 2016-03-06 18:25+0100\n"
 "Last-Translator: Tobias Zeumer <tobias.zeumer@tuhh.de>\n"
 "Language-Team:  <tobias.zeumer@tuhh.de>\n"
 "MIME-Version: 1.0\n"
@@ -44,6 +46,7 @@ msgstr "Ihr Benutzername"
 #: checkout.php:92
 #: checkout.php:284
 msgid "please choose a name"
+msgid "Please, choose a name."
 msgstr "Bitte wählen Sie Ihren Namen"
 
 #: checkout.php:99
@@ -53,6 +56,7 @@ msgstr "Ihre Meldung an uns"
 #: checkout.php:100
 #: checkout.php:301
 msgid "if you have any comments for us please put them here!"
+msgid "If you have any comments for us please put them here!"
 msgstr "Bitte tragen Sie Ihre Nachricht an uns hier ein"
 
 #: checkout.php:111
@@ -767,6 +771,7 @@ msgstr "Übersetzung: Metabuttons"
 
 #: admin/settings.php:577
 msgid "Meta Button: TOC (available)"
+msgid "Meta Button: ToC (available)"
 msgstr "Metabutton: ToC (verfügbar)"
 
 #: admin/settings.php:578
@@ -1407,6 +1412,7 @@ msgstr "Elektronischer Bestand"
 #: admin/settings.php:977
 msgid "Optional. Are you subscribed for the online edition of the journal? This information is used to decide if a direct download button should be shown; see Your Institution\" setting."
 msgstr "Optional. Beseitzen Sie die elektronische Ausgabe des Journals? Diese Information wird genutzt um zu entscheiden, ob der Direktdownload-Button gezeigt werden soll (siehe Ihre Einrichtung-Einstellungen)."
+msgstr "Optional. Besitzen Sie die elektronische Ausgabe der Zeitschrift? Anhand dieser Information wird entschieden, ob der Direktdownload-Button gezeigt werden soll (siehe die Einstellungen für Ihre Einrichtung)."
 
 #: admin/settings.php:980
 msgid "Toc available"
